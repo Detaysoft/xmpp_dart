@@ -32,12 +32,17 @@ class MessageHandler implements MessageApi {
 
   @override
   void sendMessage(Jid to, String text) {
-    _sendMessageStanza(to, text);
+    _sendTextMessage(to, text);
   }
 
-  void _sendMessageStanza(Jid jid, String text) {
+  @override
+  void sendMessageStanza(MessageStanza stanza) {
+    _connection.writeStanza(stanza);
+  }
+
+  void _sendTextMessage(Jid jid, String text) {
     MessageStanza stanza =
-        MessageStanza(AbstractStanza.getRandomId(), MessageStanzaType.CHAT);
+        MessageStanza(MessageStanzaType.CHAT, id: AbstractStanza.getRandomId());
     stanza.toJid = jid;
     stanza.fromJid = _connection.fullJid;
     stanza.body = text;

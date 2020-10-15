@@ -24,12 +24,15 @@ void main(List<String> arguments) {
 //    port = 5222;
 //  }
   var jid = xmpp.Jid.fromFullJid(userAtDomain);
-  var account = xmpp.XmppAccountSettings(userAtDomain, jid.local, jid.domain, password, 5222, resource: 'xmppstone');
+  var account = xmpp.XmppAccountSettings(
+      userAtDomain, jid.local, jid.domain, password, 5222,
+      resource: 'xmppstone');
   var connection = xmpp.Connection(account);
   connection.connect();
   xmpp.MessagesListener messagesListener = ExampleMessagesListener();
   ExampleConnectionStateChangedListener(connection, messagesListener);
-  xmpp.PresenceManager presenceManager = xmpp.PresenceManager.getInstance(connection);
+  xmpp.PresenceManager presenceManager =
+      xmpp.PresenceManager.getInstance(connection);
   presenceManager.subscriptionStream.listen((streamEvent) {
     if (streamEvent.type == xmpp.SubscriptionEventType.REQUEST) {
       print('Accepting presence request');
@@ -38,19 +41,22 @@ void main(List<String> arguments) {
   });
   var receiver = 'nemanja2@test';
   var receiverJid = xmpp.Jid.fromFullJid(receiver);
-  xmpp.MessageHandler messageHandler = xmpp.MessageHandler.getInstance(connection);
+  xmpp.MessageHandler messageHandler =
+      xmpp.MessageHandler.getInstance(connection);
   getConsoleStream().asBroadcastStream().listen((String str) {
     messageHandler.sendMessage(receiverJid, str);
   });
 }
 
-class ExampleConnectionStateChangedListener implements xmpp.ConnectionStateChangedListener {
+class ExampleConnectionStateChangedListener
+    implements xmpp.ConnectionStateChangedListener {
   xmpp.Connection _connection;
   xmpp.MessagesListener _messagesListener;
 
   StreamSubscription<String> subscription;
 
-  ExampleConnectionStateChangedListener(xmpp.Connection connection, xmpp.MessagesListener messagesListener) {
+  ExampleConnectionStateChangedListener(
+      xmpp.Connection connection, xmpp.MessagesListener messagesListener) {
     _connection = connection;
     _messagesListener = messagesListener;
     _connection.connectionStateStream.listen(onConnectionStateChanged);
@@ -66,7 +72,8 @@ class ExampleConnectionStateChangedListener implements xmpp.ConnectionStateChang
           print('Your info' + vCard.buildXmlString());
         }
       });
-      xmpp.MessageHandler messageHandler = xmpp.MessageHandler.getInstance(_connection);
+      xmpp.MessageHandler messageHandler =
+          xmpp.MessageHandler.getInstance(_connection);
       var rosterManager = xmpp.RosterManager.getInstance(_connection);
       messageHandler.messagesStream.listen(_messagesListener.onNewMessage);
       sleep(const Duration(seconds: 1));
@@ -84,18 +91,23 @@ class ExampleConnectionStateChangedListener implements xmpp.ConnectionStateChang
         if (vCard != null) {
           print('Receiver info' + vCard.buildXmlString());
           if (vCard != null && vCard.image != null) {
-            var file = File('test456789.jpg')..writeAsBytesSync(image.encodeJpg(vCard.image));
+            var file = File('test456789.jpg')
+              ..writeAsBytesSync(image.encodeJpg(vCard.image));
             print('IMAGE SAVED TO: ${file.path}');
           }
         }
       });
-      xmpp.PresenceManager presenceManager = xmpp.PresenceManager.getInstance(_connection);
+      xmpp.PresenceManager presenceManager =
+          xmpp.PresenceManager.getInstance(_connection);
       presenceManager.presenceStream.listen(onPresence);
     }
   }
 
   void onPresence(xmpp.PresenceData event) {
-    print('presence Event from ' + event.jid.fullJid + ' PRESENCE: ' + event.showElement.toString());
+    print('presence Event from ' +
+        event.jid.fullJid +
+        ' PRESENCE: ' +
+        event.showElement.toString());
   }
 }
 

@@ -100,7 +100,7 @@ class StanzaParser {
           break;
       }
     }
-    MessageStanza stanza = MessageStanza(id, type);
+    MessageStanza stanza = MessageStanza(type, id: id);
 
     return stanza;
   }

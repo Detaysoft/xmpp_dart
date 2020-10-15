@@ -11,9 +11,9 @@ class MessageStanza extends AbstractStanza {
     _type = value;
   }
 
-  MessageStanza(id, type) {
+  MessageStanza(MessageStanzaType type, {String, id}) {
     name = 'message';
-    this.id = id;
+    this.id = id ?? AbstractStanza.getRandomId();
     _type = type;
     this.addAttribute(
         XmppAttribute('type', _type.toString().split('.').last.toLowerCase()));
@@ -54,6 +54,33 @@ class MessageStanza extends AbstractStanza {
     element.name = 'thread';
     element.textValue = value;
     this.addChild(element);
+  }
+
+  XmppElement get forwarded => this
+      .children
+      .firstWhere((child) => (child.name == 'forwarded'), orElse: () => null);
+
+  set forwarded(XmppElement element) {
+    this.addChild(element);
+  }
+
+  bool get active =>
+      this.children.firstWhere((child) => (child.name == 'active'),
+          orElse: () => null) !=
+      null;
+
+  set active(bool active) {
+    if (active) {
+      XmppElement element = XmppElement();
+      element.name = 'active';
+      this.addChild(element);
+    } else {
+      this
+          .children
+          .firstWhere((child) => (child.name == 'active'), orElse: () => null)
+          ?.children
+          ?.removeLast();
+    }
   }
 }
 

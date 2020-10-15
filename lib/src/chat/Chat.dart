@@ -53,7 +53,7 @@ class ChatImpl implements Chat {
 
   void sendMessage(String text) {
     MessageStanza stanza =
-        MessageStanza(AbstractStanza.getRandomId(), MessageStanzaType.CHAT);
+        MessageStanza(MessageStanzaType.CHAT, id: AbstractStanza.getRandomId());
     stanza.toJid = _jid;
     stanza.fromJid = _connection.fullJid;
     stanza.body = text;
@@ -65,7 +65,7 @@ class ChatImpl implements Chat {
 
   set myState(ChatState state) {
     MessageStanza stanza =
-        MessageStanza(AbstractStanza.getRandomId(), MessageStanzaType.CHAT);
+        MessageStanza(MessageStanzaType.CHAT, id: AbstractStanza.getRandomId());
     stanza.toJid = _jid;
     stanza.fromJid = _connection.fullJid;
     XmppElement stateElement = XmppElement();
